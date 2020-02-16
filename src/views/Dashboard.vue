@@ -8,7 +8,7 @@
 import PageHeader from '@/components/PageHeader.vue'
 
 export default {
-  name: 'Home',
+  name: 'Dashboard',
   components: {
     PageHeader
   }

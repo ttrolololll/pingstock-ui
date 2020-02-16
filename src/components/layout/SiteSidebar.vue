@@ -56,7 +56,8 @@
             <b-menu-item
                     label="Logout"
                     icon="settings"
-                    href="https://google.com">
+                    tag="router-link"
+                    to="/expo">
             </b-menu-item>
         </b-menu-list>
     </b-menu>
@@ -80,6 +81,8 @@ export default {
     .site-menu {
         height: calc(100vh - 2rem);
         overflow: auto;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
         border-right: 1px solid #f2f2f2;
         .menu-logo {
             margin-bottom: 1rem;
