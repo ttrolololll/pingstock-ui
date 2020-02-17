@@ -7,29 +7,20 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     auth: {
-      token: localStorage.getItem('token') || undefined
+      token: localStorage.getItem('token')
     },
     user: {}
   },
   mutations: {
+    login (state, token) {
+      state.auth.token = token
+    }
   },
   actions: {
-    login ({ commit }, user) {
-      return new Promise((resolve, reject) => {
-        axios({ url: process.env.VUE_APP_URL + '/users/auth/login', data: user, method: 'POST' })
-          .then(resp => {
-            const token = resp.data.data.access_token
-            localStorage.setItem('token', token)
-            axios.defaults.headers.common.Authorization = token
-            commit('auth_success', token)
-            resolve(resp)
-          })
-          .catch(err => {
-            commit('auth_error')
-            localStorage.removeItem('token')
-            reject(err)
-          })
-      })
+    login ({ commit }, token) {
+      localStorage.setItem('token', token)
+      axios.defaults.headers.common.Authorization = token
+      commit('login', token)
     }
   },
   modules: {
