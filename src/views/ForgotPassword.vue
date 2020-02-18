@@ -1,5 +1,5 @@
 <template>
-    <div class="view-auth view-login">
+    <div class="view-auth view-forgot-password">
         <section class="hero is-fullheight">
             <div class="hero-body">
                 <div class="container">
@@ -50,7 +50,7 @@
 import pingstock from '../services/pingstock'
 
 export default {
-  name: 'Login',
+  name: 'ForgotPassword',
   data () {
     return {
       isFormLogin: true,

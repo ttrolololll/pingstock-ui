@@ -70,6 +70,20 @@ const routes = [
     ]
   },
   {
+    path: '/forgotpassword',
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        name: 'ForgotPassword',
+        component: () => import('../views/ForgotPassword.vue'),
+        meta: {
+          no_auth: true
+        }
+      }
+    ]
+  },
+  {
     path: '/dashboard',
     component: DefaultLayout,
     children: [
