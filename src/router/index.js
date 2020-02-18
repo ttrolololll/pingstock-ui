@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import _ from 'lodash'
+import { ToastProgrammatic as Toast } from 'buefy'
 import DefaultLayout from '../layouts/DefaultLayout.vue'
 import AuthLayout from '../layouts/AuthLayout.vue'
 import store from '../store'
+import pingstock from '../services/pingstock'
 
 Vue.use(VueRouter)
 
@@ -21,6 +23,37 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/verify/email/:token',
+    name: 'VerifyEmail',
+    meta: {
+      no_auth: true
+    },
+    beforeEnter: (to, from, next) => {
+      if (!to.params.token) {
+        next('/register')
+        return
+      }
+      pingstock.verifyEmail(to.params.token)
+        .then(resp => {
+          Toast.open({
+            duration: 5000,
+            message: 'Email verified, you can now login',
+            position: 'is-bottom-right',
+            type: 'is-success'
+          })
+        })
+        .catch(err => {
+          Toast.open({
+            duration: 5000,
+            message: err.response.data.message ? err.response.data.message : 'Invalid email verification token',
+            position: 'is-bottom-right',
+            type: 'is-danger'
+          })
+        })
+      next('/login')
+    }
   },
   {
     path: '/login',
