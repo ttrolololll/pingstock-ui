@@ -52,8 +52,32 @@ const routes = [
             type: 'is-danger'
           })
         })
-      next('/login')
+        .finally(() => {
+          next('/login')
+        })
     }
+  },
+  {
+    path: '/forgotpassword',
+    component: AuthLayout,
+    children: [
+      {
+        path: '',
+        name: 'ForgotPassword',
+        component: () => import('../views/ForgotPassword.vue'),
+        meta: {
+          no_auth: true
+        }
+      },
+      {
+        path: 'reset/:token',
+        name: 'ForgotPasswordReset',
+        component: () => import('../views/ForgotPassword.vue'),
+        meta: {
+          no_auth: true
+        }
+      }
+    ]
   },
   {
     path: '/login',
@@ -70,18 +94,31 @@ const routes = [
     ]
   },
   {
-    path: '/forgotpassword',
-    component: AuthLayout,
-    children: [
-      {
-        path: '',
-        name: 'ForgotPassword',
-        component: () => import('../views/ForgotPassword.vue'),
-        meta: {
-          no_auth: true
-        }
-      }
-    ]
+    path: '/logout',
+    name: 'Logout',
+    beforeEnter: (to, from, next) => {
+      pingstock.logout()
+        .then(resp => {
+          Toast.open({
+            duration: 5000,
+            message: 'Logout successfully',
+            position: 'is-bottom-right',
+            type: 'is-success'
+          })
+        })
+        .catch(err => {
+          Toast.open({
+            duration: 5000,
+            message: err.response.data.message ? err.response.data.message : 'An error occurred, please clear your browser history and cache',
+            position: 'is-bottom-right',
+            type: 'is-danger'
+          })
+        })
+        .finally(() => {
+          store.dispatch('logout')
+          next('/login')
+        })
+    }
   },
   {
     path: '/dashboard',

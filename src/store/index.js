@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -14,13 +13,19 @@ export default new Vuex.Store({
   mutations: {
     login (state, token) {
       state.auth.token = token
+    },
+    logout (state) {
+      state.auth.token = null
     }
   },
   actions: {
     login ({ commit }, token) {
       localStorage.setItem('token', token)
-      axios.defaults.headers.common.Authorization = token
       commit('login', token)
+    },
+    logout ({ commit }) {
+      localStorage.removeItem('token')
+      commit('logout')
     }
   },
   modules: {

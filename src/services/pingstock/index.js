@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const baseUrl = process.env.VUE_APP_URL
+axios.defaults.headers.common.Authorization = 'Bearer ' + localStorage.getItem('token')
 
 const pingstock = {
   register: (firstName, lastName, email, password) => {
@@ -30,6 +31,27 @@ const pingstock = {
       }
     })
   },
+  forgotPasswordRequest: email => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/auth/pwresetreq',
+      data: {
+        email: email
+      }
+    })
+  },
+  forgotPasswordReset: (email, password, passwordConfirmation, token) => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/auth/pwreset',
+      data: {
+        email: email,
+        password: password,
+        password_confirmation: passwordConfirmation,
+        token: token
+      }
+    })
+  },
   login: (email, password) => {
     return axios({
       method: 'post',
@@ -38,6 +60,12 @@ const pingstock = {
         email: email,
         password: password
       }
+    })
+  },
+  logout: () => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/auth/logout'
     })
   }
 }

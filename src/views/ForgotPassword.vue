@@ -9,32 +9,29 @@
                                 <img src="https://raw.githubusercontent.com/buefy/buefy/dev/static/img/buefy-logo.png"
                                      alt="Lightweight UI components for Vue.js based on Bulma">
                             </figure>
-                            <form v-on:submit.prevent="handleLogin()" v-if="isFormLogin">
+                            <form v-on:submit.prevent="handleRequest()" v-if="isFormRequest">
                                 <b-field label="Email">
                                     <b-input type="email" v-model="email"></b-input>
                                 </b-field>
-                                <b-field label="Password">
-                                    <b-input type="password" v-model="password" password-reveal></b-input>
-                                </b-field>
                                 <div class="content has-text-centered">
-                                    <p><router-link to="/forgotpassword">Forgot Password</router-link></p>
-                                    <a v-on:click.prevent="toggleForm">Re-send Email Verification Link</a>
-                                </div>
-                                <div class="content has-text-centered">
-                                    <p><b-button type="is-success" nativeType="submit" size="is-medium" expanded :disabled="isSubmitDisabled">Login</b-button></p>
+                                    <p><b-button type="is-success" nativeType="submit" size="is-medium" expanded :disabled="isSubmitDisabled">Send Password Reset Request</b-button></p>
+                                    <p><router-link to="/login">Back to Login</router-link></p>
                                     <p>Don't have an account? <router-link to="/register">Register here</router-link>!</p>
                                 </div>
                             </form>
-                            <form v-on:submit.prevent="handleResendVerificationEmail()" v-if="!isFormLogin">
-                                <b-field label="Registered Email">
+                            <form v-on:submit.prevent="handleReset()" v-if="!isFormRequest">
+                                <b-field label="Email">
                                     <b-input type="email" v-model="email"></b-input>
                                 </b-field>
+                                <b-field label="New Password" v-bind:type="password === passwordConfirmation ? '' : 'is-danger'" v-bind:message="password === passwordConfirmation ? '' : 'Password values must match'">
+                                    <b-input type="password" v-model="password" password-reveal></b-input>
+                                </b-field>
+                                <b-field label="Confirm Password">
+                                    <b-input type="password" v-model="passwordConfirmation"></b-input>
+                                </b-field>
                                 <div class="content has-text-centered">
-                                    <p><router-link to="/forgotpassword">Forgot Password</router-link></p>
-                                    <a v-on:click.prevent="toggleForm">Back to Login</a>
-                                </div>
-                                <div class="content has-text-centered">
-                                    <p><b-button type="is-success" nativeType="submit" size="is-medium" expanded :disabled="isSubmitDisabled">Re-send Verification Email</b-button></p>
+                                    <p><b-button type="is-success" nativeType="submit" size="is-medium" expanded :disabled="isSubmitDisabled">Reset Password</b-button></p>
+                                    <p><router-link to="/login">Back to Login</router-link></p>
                                     <p>Don't have an account? <router-link to="/register">Register here</router-link>!</p>
                                 </div>
                             </form>
@@ -53,43 +50,24 @@ export default {
   name: 'ForgotPassword',
   data () {
     return {
-      isFormLogin: true,
       email: undefined,
       password: undefined,
+      passwordConfirmation: undefined,
       submitting: false
     }
   },
   methods: {
     toggleForm: function () {
-      this.isFormLogin = !this.isFormLogin
+      console.log(this.$route.name)
+      this.isFormRequest = !this.isFormRequest
     },
-    handleLogin: function () {
+    handleRequest: function () {
       this.submitting = true
-      pingstock.login(this.email, this.password)
+      pingstock.forgotPasswordRequest(this.email)
         .then(resp => {
-          this.$store.dispatch('login', resp.data.data.access_token)
-          this.$router.push('/dashboard')
-        })
-        .catch(err => {
           this.$buefy.toast.open({
             duration: 5000,
-            message: err.response.data.message ? err.response.data.message : 'Email or password not found',
-            position: 'is-bottom-right',
-            type: 'is-danger'
-          })
-        })
-        .finally(() => {
-          this.submitting = false
-        })
-    },
-    handleResendVerificationEmail: function () {
-      this.submitting = true
-      pingstock.resendVerificationEmail(this.email)
-        .then(resp => {
-          this.isFormLogin = true
-          this.$buefy.toast.open({
-            duration: 5000,
-            message: 'Verification email has been re-sent to ' + this.email,
+            message: 'You will receive reset instruction if email is valid',
             position: 'is-bottom-right',
             type: 'is-success'
           })
@@ -97,22 +75,49 @@ export default {
         .catch(err => {
           this.$buefy.toast.open({
             duration: 5000,
-            message: err.response.data.message ? err.response.data.message : 'Unable to re-send verification email',
+            message: err.response.data.message ? err.response.data.message : 'You will receive reset instruction if email is valid',
             position: 'is-bottom-right',
-            type: 'is-danger'
+            type: 'is-success'
           })
         })
         .finally(() => {
           this.submitting = false
         })
+    },
+    handleReset: function () {
+      this.submitting = true
+      console.log(this.$route.params.token)
+      pingstock.forgotPasswordReset(this.email, this.password, this.passwordConfirmation, this.$route.params.token)
+        .then(resp => {
+          this.isFormRequest = true
+          this.$buefy.toast.open({
+            duration: 5000,
+            message: 'Password reset successful, please login with your new password',
+            position: 'is-bottom-right',
+            type: 'is-success'
+          })
+          this.$router.push('/login')
+        })
+        .catch(err => {
+          this.submitting = false
+          this.$buefy.toast.open({
+            duration: 5000,
+            message: err.response.data.message ? err.response.data.message : 'Unable to reset password',
+            position: 'is-bottom-right',
+            type: 'is-danger'
+          })
+        })
     }
   },
   computed: {
+    isFormRequest: function () {
+      return this.$route.name === 'ForgotPassword'
+    },
     isSubmitDisabled: function () {
-      if (this.isFormLogin) {
-        return !this.email || !this.password || this.submitting
+      if (this.isFormRequest) {
+        return !this.email || this.submitting
       }
-      return !this.email || this.submitting
+      return !this.email || !this.password || !this.passwordConfirmation || this.submitting
     }
   }
 }

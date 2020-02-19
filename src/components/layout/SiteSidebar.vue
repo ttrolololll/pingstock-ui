@@ -57,7 +57,7 @@
                     label="Logout"
                     icon="settings"
                     tag="router-link"
-                    to="/expo">
+                    to="/logout">
             </b-menu-item>
         </b-menu-list>
     </b-menu>
