@@ -67,6 +67,23 @@ const pingstock = {
       method: 'post',
       url: baseUrl + '/users/auth/logout'
     })
+  },
+  profile: () => {
+    return axios({
+      method: 'get',
+      url: baseUrl + '/users/profile'
+    })
+  },
+  profileUpdate: (firstName, lastName, email) => {
+    return axios({
+      method: 'patch',
+      url: baseUrl + '/users/profile',
+      data: {
+        first_name: firstName,
+        last_name: lastName,
+        email: email
+      }
+    })
   }
 }
 

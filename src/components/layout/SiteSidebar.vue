@@ -9,25 +9,25 @@
                     label="Dashboard"
                     icon="home"
                     tag="router-link"
-                    to="/">
+                    to="/dashboard">
             </b-menu-item>
         </b-menu-list>
         <b-menu-list label="Stock Alert Rules">
             <b-menu-item
                     label="Create New"
-                    icon="home"
+                    icon="bell-plus"
                     tag="router-link"
                     to="/expo">
             </b-menu-item>
             <b-menu-item
                     label="Active Rules"
-                    icon="home"
+                    icon="bell"
                     tag="router-link"
                     to="/expo">
             </b-menu-item>
             <b-menu-item
                     label="Triggered Rules"
-                    icon="home"
+                    icon="bell-outline"
                     tag="router-link"
                     to="/expo">
             </b-menu-item>
@@ -35,19 +35,19 @@
         <b-menu-list label="Account">
             <b-menu-item
                     label="Profile"
-                    icon="home"
+                    icon="account-circle"
                     tag="router-link"
-                    to="/expo">
+                    to="/account/profile">
             </b-menu-item>
             <b-menu-item
                     label="Payments"
-                    icon="home"
+                    icon="cash-multiple"
                     tag="router-link"
                     to="/expo">
             </b-menu-item>
             <b-menu-item
                     label="Subscriptions"
-                    icon="home"
+                    icon="ticket"
                     tag="router-link"
                     to="/expo">
             </b-menu-item>
@@ -55,7 +55,7 @@
         <b-menu-list label="Actions">
             <b-menu-item
                     label="Logout"
-                    icon="settings"
+                    icon="logout"
                     tag="router-link"
                     to="/logout">
             </b-menu-item>

@@ -132,6 +132,34 @@ const routes = [
     ]
   },
   {
+    path: '/account',
+    component: DefaultLayout,
+    children: [
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: () => import('../views/account/profile/Profile.vue'),
+        children: [
+          {
+            path: 'password',
+            name: 'ProfilePassword',
+            component: () => import('../views/account/profile/Password.vue')
+          }
+        ]
+      },
+      {
+        path: 'payments',
+        name: 'Payments',
+        component: () => import('../views/account/payment/Payment.vue')
+      },
+      {
+        path: 'subscriptions',
+        name: 'Subscriptions',
+        component: () => import('../views/account/subscription/Subscription.vue')
+      }
+    ]
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('../views/About.vue')
@@ -143,17 +171,37 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  // if route does not require auth
   if (to.meta.no_auth === true) {
+    // user logged in, redirect to default protected route
     if (!_.isEmpty(store.state.auth.token)) {
       next('/dashboard')
       return
     }
+    // proceed
     next()
     return
   }
+  // go to login if auth token not found
   if (_.isEmpty(store.state.auth.token)) {
     next('/login')
     return
+  }
+  // get user profile if not exist
+  if (_.isEmpty(store.state.user)) {
+    pingstock.profile()
+      .then(resp => {
+        store.dispatch('set_user', resp.data.data)
+        next()
+      })
+      .catch(() => {
+        Toast.open({
+          duration: 5000,
+          message: 'Unable to retrieve user, please refresh',
+          position: 'is-bottom-right',
+          type: 'is-warn'
+        })
+      })
   }
   next()
 })

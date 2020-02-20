@@ -16,6 +16,15 @@ export default new Vuex.Store({
     },
     logout (state) {
       state.auth.token = null
+      state.user = {}
+    },
+    set_user (state, user) {
+      state.user = user
+    },
+    update_user_profile (state, user) {
+      state.user.first_name = user.first_name
+      state.user.last_name = user.last_name
+      state.user.email = user.email
     }
   },
   actions: {
@@ -26,6 +35,12 @@ export default new Vuex.Store({
     logout ({ commit }) {
       localStorage.removeItem('token')
       commit('logout')
+    },
+    set_user ({ commit }, user) {
+      commit('set_user', user)
+    },
+    update_user_profile ({ commit }, user) {
+      commit('update_user_profile', user)
     }
   },
   modules: {
