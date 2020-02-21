@@ -116,7 +116,9 @@ const routes = [
         })
         .finally(() => {
           store.dispatch('logout')
-          next('/login')
+            .finally(() => {
+              next('/login')
+            })
         })
     }
   },
@@ -138,14 +140,12 @@ const routes = [
       {
         path: 'profile',
         name: 'Profile',
-        component: () => import('../views/account/profile/Profile.vue'),
-        children: [
-          {
-            path: 'password',
-            name: 'ProfilePassword',
-            component: () => import('../views/account/profile/Password.vue')
-          }
-        ]
+        component: () => import('../views/account/profile/Profile.vue')
+      },
+      {
+        path: 'profile/password',
+        name: 'ProfilePassword',
+        component: () => import('../views/account/profile/Password.vue')
       },
       {
         path: 'payments',
@@ -192,15 +192,26 @@ router.beforeEach((to, from, next) => {
     pingstock.profile()
       .then(resp => {
         store.dispatch('set_user', resp.data.data)
-        next()
+          .then(resp => {
+            next()
+          })
+          .catch(() => {
+            Toast.open({
+              duration: 5000,
+              message: 'Unable to retrieve user, please refresh',
+              position: 'is-bottom-right',
+              type: 'is-warn'
+            })
+          })
       })
       .catch(() => {
         Toast.open({
           duration: 5000,
-          message: 'Unable to retrieve user, please refresh',
+          message: 'Unable to retrieve user, please re-login',
           position: 'is-bottom-right',
           type: 'is-warn'
         })
+        store.dispatch('logout')
       })
   }
   next()

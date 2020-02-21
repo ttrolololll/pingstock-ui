@@ -63,24 +63,51 @@ export default {
     toggleForm: function () {
       this.isFormLogin = !this.isFormLogin
     },
-    handleLogin: function () {
+    handleLogin: async function () {
       this.submitting = true
-      pingstock.login(this.email, this.password)
-        .then(resp => {
-          this.$store.dispatch('login', resp.data.data.access_token)
-          this.$router.push('/dashboard')
+      // login and dispatch action
+      const loginResp = await pingstock.login(this.email, this.password)
+      if (loginResp.status !== 200 || !loginResp.data.data.access_token) {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: loginResp.data.message ? loginResp.data.message : 'Email or password not found',
+          position: 'is-bottom-right',
+          type: 'is-danger'
         })
-        .catch(err => {
-          this.$buefy.toast.open({
-            duration: 5000,
-            message: err.response.data.message ? err.response.data.message : 'Email or password not found',
-            position: 'is-bottom-right',
-            type: 'is-danger'
-          })
+        this.submitting = false
+        return
+      }
+      await this.$store.dispatch('login', loginResp.data.data.access_token)
+      // get user profile
+      const profileResp = await pingstock.profile()
+      if (profileResp.status !== 200) {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: profileResp.data.message ? profileResp.data.message : 'Unable to retrieve profile',
+          position: 'is-bottom-right',
+          type: 'is-danger'
         })
-        .finally(() => {
-          this.submitting = false
-        })
+        this.submitting = false
+        return
+      }
+      await this.$store.dispatch('set_user', profileResp.data.data)
+      await this.$router.push('/dashboard')
+      // pingstock.login(this.email, this.password)
+      //   .then(resp => {
+      //     this.$store.dispatch('login', resp.data.data.access_token)
+      //     this.$router.push('/dashboard')
+      //   })
+      //   .catch(err => {
+      //     this.$buefy.toast.open({
+      //       duration: 5000,
+      //       message: err.response.data.message ? err.response.data.message : 'Email or password not found',
+      //       position: 'is-bottom-right',
+      //       type: 'is-danger'
+      //     })
+      //   })
+      //   .finally(() => {
+      //     this.submitting = false
+      //   })
     },
     handleResendVerificationEmail: function () {
       this.submitting = true

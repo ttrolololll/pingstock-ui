@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -30,6 +31,7 @@ export default new Vuex.Store({
   actions: {
     login ({ commit }, token) {
       localStorage.setItem('token', token)
+      axios.defaults.headers.common.Authorization = 'Bearer ' + localStorage.getItem('token')
       commit('login', token)
     },
     logout ({ commit }) {

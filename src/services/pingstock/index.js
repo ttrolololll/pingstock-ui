@@ -84,6 +84,17 @@ const pingstock = {
         email: email
       }
     })
+  },
+  passwordUpdate: (password, newPassword, confirmPassword) => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/auth/pw',
+      data: {
+        current_password: password,
+        password: newPassword,
+        password_confirmation: confirmPassword
+      }
+    })
   }
 }
 

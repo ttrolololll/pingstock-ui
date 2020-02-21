@@ -43,13 +43,13 @@
                     label="Payments"
                     icon="cash-multiple"
                     tag="router-link"
-                    to="/expo">
+                    to="/account/payments">
             </b-menu-item>
             <b-menu-item
                     label="Subscriptions"
                     icon="ticket"
                     tag="router-link"
-                    to="/expo">
+                    to="/account/subscriptions">
             </b-menu-item>
         </b-menu-list>
         <b-menu-list label="Actions">
