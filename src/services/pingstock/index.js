@@ -116,6 +116,33 @@ const pingstock = {
       method: 'delete',
       url: baseUrl + '/users/payment/cards/all'
     })
+  },
+  paymentMethods: () => {
+    return axios({
+      method: 'get',
+      url: baseUrl + '/users/payment/cards'
+    })
+  },
+  subscribe: (plan) => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/subscriptions',
+      data: {
+        plan: plan
+      }
+    })
+  },
+  subscriptions: () => {
+    return axios({
+      method: 'get',
+      url: baseUrl + '/users/subscriptions'
+    })
+  },
+  products: () => {
+    return axios({
+      method: 'get',
+      url: baseUrl + '/products'
+    })
   }
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="payments">
+    <div class="view-payments">
         <PageHeader title="Payment Settings" subtitle=""/>
         <section>
             <div class="tab-content">
@@ -21,7 +21,7 @@
                     </header>
                     <footer class="card-footer">
                         <a class="card-footer-item" @click.prevent="initiateCardSetup()">Edit</a>
-                        <a class="card-footer-item" @click.prevent="deleteAllCards()">Delete</a>
+                        <a class="card-footer-item" @click.prevent="confirmDelete()">Delete</a>
                     </footer>
                 </div>
             </div>
@@ -153,6 +153,16 @@ export default {
           this.isEdit = false
           this.intentClientSecret = undefined
         })
+    },
+    confirmDelete: function () {
+      const vm = this
+      this.$buefy.dialog.confirm({
+        message: 'Please confirm payment method deletion',
+        type: 'is-danger',
+        onConfirm: function () {
+          vm.deleteAllCards()
+        }
+      })
     }
   },
   computed: {
