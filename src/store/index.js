@@ -26,6 +26,10 @@ export default new Vuex.Store({
       state.user.first_name = user.first_name
       state.user.last_name = user.last_name
       state.user.email = user.email
+    },
+    remove_user_payment_method (state) {
+      state.user.card_brand = null
+      state.user.card_last_four = null
     }
   },
   actions: {
@@ -43,6 +47,9 @@ export default new Vuex.Store({
     },
     update_user_profile ({ commit }, user) {
       commit('update_user_profile', user)
+    },
+    remove_user_payment_method ({ commit }) {
+      commit('remove_user_payment_method')
     }
   },
   modules: {

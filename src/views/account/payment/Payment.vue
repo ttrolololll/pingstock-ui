@@ -3,19 +3,25 @@
         <PageHeader title="Payment Settings" subtitle=""/>
         <section>
             <div class="tab-content">
-                <div class="buttons" v-if="!user.card_last_four">
-                    <b-button type="is-info" icon-left="credit-card-plus" v-on:click="toggleEdit">Add Card</b-button>
+                <div class="content" v-if="canShowInitButton">
+                    <div class="buttons">
+                        <b-button type="is-info" icon-left="credit-card-plus" @click="initiateCardSetup()">Add Card</b-button>
+                    </div>
+                    <p v-if="!user.card_last_four">No payment method found</p>
                 </div>
-                <div class="content" v-if="!user.card_last_four">
-                    <p>You have not added any payment card.</p>
+                <div class="content" v-if="canShowCardForm">
+                    <b-field>
+                        <div id="card-element"></div>
+                    </b-field>
+                    <button id="card-button" class="button is-primary is-small" :data-secret="intentClientSecret" @click="cardSetupConfirm()" :disabled="isSubmitting || !intentClientSecret">Confirm</button>
                 </div>
-                <div class="card">
-                    <header class="card-header">
-                        <p class="card-header-title">VISA - *** 5536</p>
+                <div class="card" v-if="canShowCard">
+                    <header class="card-header is-primary">
+                        <p class="card-header-title">{{user.card_brand.toUpperCase()}} - *** {{user.card_last_four}}</p>
                     </header>
                     <footer class="card-footer">
-                        <a href="#" class="card-footer-item">Edit</a>
-                        <a href="#" class="card-footer-item">Delete</a>
+                        <a class="card-footer-item" @click.prevent="initiateCardSetup()">Edit</a>
+                        <a class="card-footer-item" @click.prevent="deleteAllCards()">Delete</a>
                     </footer>
                 </div>
             </div>
@@ -28,6 +34,11 @@ import { mapState } from 'vuex'
 import PageHeader from '@/components/PageHeader.vue'
 import pingstock from '../../../services/pingstock'
 
+// eslint-disable-next-line no-undef
+const stripe = Stripe(process.env.VUE_APP_STRIPE_PUB_KEY)
+const stripeElements = stripe.elements()
+const cardElement = stripeElements.create('card')
+
 export default {
   name: 'Payments',
   components: {
@@ -35,61 +46,125 @@ export default {
   },
   data () {
     return {
-      isReadOnly: true
-    }
-  },
-  created () {
-    if (!this.user) {
-      pingstock.profile()
-        .then(resp => {
-          this.$store.dispatch('set_user', resp.data.data)
-        })
-        .catch(() => {
-          this.$buefy.toast.open({
-            duration: 5000,
-            message: 'Unable to retrieve user, please refresh',
-            position: 'is-bottom-right',
-            type: 'is-warn'
-          })
-        })
+      intentClientSecret: undefined,
+      isEdit: false,
+      isSubmitting: false
     }
   },
   methods: {
-    toggleEdit: function () {
-      this.isReadOnly = !this.isReadOnly
-    },
-    handleProfileUpdate: function () {
-      this.isReadOnly = true
-      pingstock.profileUpdate(this.user.first_name, this.user.last_name, this.user.email)
+    initiateCardSetup: function () {
+      this.isEdit = true
+      pingstock.stripeSetupIntent()
         .then(resp => {
-          this.$buefy.toast.open({
-            duration: 5000,
-            message: 'Profile update successful',
-            position: 'is-bottom-right',
-            type: 'is-success'
+          this.intentClientSecret = resp.data.data.client_secret
+          this.$nextTick(() => {
+            cardElement.mount('#card-element')
           })
-          const updateObj = {
-            first_name: this.user.first_name,
-            last_name: this.user.last_name,
-            email: this.user.email
-          }
-          this.$store.dispatch('update_user_profile', updateObj)
+          this.isEdit = true
         })
         .catch(err => {
           this.$buefy.toast.open({
             duration: 5000,
-            message: err.response.data.message ? err.response.data.message : 'Unable to update profile, please try again',
+            message: err.response.data.message ? err.response.data.message : 'Unable to assert card setup intent, please try again',
             position: 'is-bottom-right',
             type: 'is-danger'
           })
-          this.isReadOnly = false
+          this.isEdit = false
+        })
+    },
+    cardSetupConfirm: async function () {
+      this.isSubmitting = true
+      // get payment_method from Stripe
+      const { setupIntent, err } = await stripe.confirmCardSetup(
+        this.intentClientSecret,
+        {
+          payment_method: {
+            card: cardElement
+          }
+        })
+      if (err) {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: err.message ? err.message : 'Unable to confirm card setup, please try again',
+          position: 'is-bottom-right',
+          type: 'is-danger'
+        })
+        this.intentClientSecret = undefined
+        this.isSubmitting = false
+        return
+      }
+      if (!setupIntent) {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: 'Please ensure the credit card details are valid',
+          position: 'is-bottom-right',
+          type: 'is-danger'
+        })
+        this.isSubmitting = false
+        return
+      }
+      // update user payment details by payment_method
+      const addCardResp = await pingstock.stripeAddCard(setupIntent.payment_method)
+      if (addCardResp.status !== 200) {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: 'Unable to update payment method, please try again',
+          position: 'is-bottom-right',
+          type: 'is-danger'
+        })
+        this.intentClientSecret = undefined
+        this.isSubmitting = false
+        return
+      }
+      // re-fetch user profile
+      pingstock.profile()
+        .then(resp => {
+          this.$store.dispatch('set_user', resp.data.data)
+            .finally(() => {
+              this.$buefy.toast.open({
+                duration: 5000,
+                message: 'Payment method added successfully',
+                position: 'is-bottom-right',
+                type: 'is-success'
+              })
+            })
+        })
+        .catch(() => {
+          // refresh if can't re-fetch profile
+          location.reload()
+        })
+        .finally(() => {
+          this.isSubmitting = false
+          this.isEdit = false
+        })
+    },
+    deleteAllCards: function () {
+      pingstock.stripeDeleteAllCards()
+        .then(resp => {
+          this.$buefy.toast.open({
+            duration: 5000,
+            message: 'Payment method removed successfully',
+            position: 'is-bottom-right',
+            type: 'is-success'
+          })
+        })
+        .finally(() => {
+          this.$store.dispatch('remove_user_payment_method')
+          this.isEdit = false
+          this.intentClientSecret = undefined
         })
     }
   },
   computed: {
     ...mapState(['auth', 'user']),
-    isSubmitDisabled: function () {
-      return this.isReadOnly || !this.user.first_name || !this.user.last_name || !this.user.email
+    canShowInitButton: function () {
+      return !this.user.card_last_four && !this.intentClientSecret
+    },
+    canShowCard: function () {
+      return this.user.card_last_four && !this.isEdit
+    },
+    canShowCardForm: function () {
+      return (!this.user.card_last_four && this.intentClientSecret) || this.isEdit
     }
   }
 }

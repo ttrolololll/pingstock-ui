@@ -95,6 +95,27 @@ const pingstock = {
         password_confirmation: confirmPassword
       }
     })
+  },
+  stripeSetupIntent: () => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/payment/setup-intent'
+    })
+  },
+  stripeAddCard: (paymentMethod) => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/payment/cards',
+      data: {
+        payment_method: paymentMethod
+      }
+    })
+  },
+  stripeDeleteAllCards: (paymentMethod) => {
+    return axios({
+      method: 'delete',
+      url: baseUrl + '/users/payment/cards/all'
+    })
   }
 }
 
