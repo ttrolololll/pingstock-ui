@@ -138,6 +138,24 @@ const pingstock = {
       url: baseUrl + '/users/subscriptions'
     })
   },
+  cancelSubscription: subscriptionID => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/subscriptions/cancel',
+      data: {
+        subscription_id: subscriptionID
+      }
+    })
+  },
+  resumeSubscription: subscriptionID => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/subscriptions/resume',
+      data: {
+        subscription_id: subscriptionID
+      }
+    })
+  },
   products: () => {
     return axios({
       method: 'get',
