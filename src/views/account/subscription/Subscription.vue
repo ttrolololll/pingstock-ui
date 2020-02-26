@@ -39,7 +39,7 @@
                 </div>
             </div>
         </section>
-        <b-loading :is-full-page="false" :active.sync="isPageLoading" :can-cancel="true"></b-loading>
+        <b-loading :is-full-page="false" :active.sync="isPageLoading"></b-loading>
     </div>
 </template>
 

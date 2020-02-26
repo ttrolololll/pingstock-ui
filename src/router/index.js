@@ -165,6 +165,33 @@ const routes = [
     ]
   },
   {
+    path: '/stock-alert-rules',
+    component: DefaultLayout,
+    children: [
+      {
+        path: '',
+        name: 'StockAlertRules',
+        component: () => import('../views/stockalertrule/StockAlertRule.vue'),
+        props: {
+          triggered: false
+        }
+      },
+      {
+        path: 'triggered',
+        name: 'StockAlertRules',
+        component: () => import('../views/stockalertrule/StockAlertRule.vue'),
+        props: {
+          triggered: true
+        }
+      },
+      {
+        path: 'new',
+        name: 'NewStockAlertRules',
+        component: () => import('../views/stockalertrule/NewStockAlertRule.vue')
+      }
+    ]
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('../views/About.vue')

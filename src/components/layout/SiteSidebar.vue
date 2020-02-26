@@ -14,22 +14,22 @@
         </b-menu-list>
         <b-menu-list label="Stock Alert Rules">
             <b-menu-item
-                    label="Create New"
-                    icon="bell-plus"
+                    label="My Alert Rules"
+                    icon="bell-outline"
                     tag="router-link"
-                    to="/expo">
-            </b-menu-item>
-            <b-menu-item
-                    label="Active Rules"
-                    icon="bell"
-                    tag="router-link"
-                    to="/expo">
+                    to="/stock-alert-rules">
             </b-menu-item>
             <b-menu-item
                     label="Triggered Rules"
                     icon="bell-outline"
                     tag="router-link"
-                    to="/expo">
+                    to="/stock-alert-rules/triggered">
+            </b-menu-item>
+            <b-menu-item
+                    label="Create New"
+                    icon="bell-plus"
+                    tag="router-link"
+                    to="/stock-alert-rules/new">
             </b-menu-item>
         </b-menu-list>
         <b-menu-list label="Account">

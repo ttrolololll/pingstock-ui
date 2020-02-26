@@ -156,6 +156,33 @@ const pingstock = {
       }
     })
   },
+  stockAlertRules: triggered => {
+    let triggeredVal = 0
+    if (triggered) {
+      triggeredVal = 1
+    }
+    return axios({
+      method: 'get',
+      url: baseUrl + '/users/stock-alerts?triggered=' + triggeredVal
+    })
+  },
+  updateStockAlertRule: rule => {
+    return axios({
+      method: 'patch',
+      url: baseUrl + '/users/stock-alerts/' + rule.id,
+      data: {
+        stock_symbol: rule.stock_symbol,
+        operator: rule.operator,
+        target: rule.target
+      }
+    })
+  },
+  deleteStockAlertRule: ruleID => {
+    return axios({
+      method: 'delete',
+      url: baseUrl + '/users/stock-alerts/' + ruleID
+    })
+  },
   products: () => {
     return axios({
       method: 'get',
