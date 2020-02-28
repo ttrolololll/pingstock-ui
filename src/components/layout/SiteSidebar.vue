@@ -21,7 +21,7 @@
             </b-menu-item>
             <b-menu-item
                     label="Triggered Rules"
-                    icon="bell-outline"
+                    icon="bell-ring-outline"
                     tag="router-link"
                     to="/stock-alert-rules/triggered">
             </b-menu-item>

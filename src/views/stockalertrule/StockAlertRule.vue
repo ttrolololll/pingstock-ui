@@ -21,6 +21,7 @@
                             <b-table-column field="status" label="Status" sortable>
                                 <span class="tag" :class="type(props.row.triggered)">{{ props.row.triggered ? 'Triggered' : 'Active' }}</span>
                             </b-table-column>
+                            <b-table-column field="created_at" label="Created At" sortable>{{ props.row.created_at | toLocalTime | humanizedLocalTimeShort }}</b-table-column>
                             <b-table-column field="actions" label="Actions" v-if="!$props.triggered">
                                 <div class="buttons">
                                     <b-button type="is-success" rounded @click="edit(props.row)">
@@ -31,6 +32,14 @@
                                     </b-button>
                                 </div>
                             </b-table-column>
+                        </template>
+                        <template slot="empty">
+                            <section class="section">
+                                <div class="content has-text-grey has-text-centered">
+                                    <p><b-icon icon="emoticon-tongue" size="is-large"></b-icon></p>
+                                    <p>No stock alert rule has been triggered yet</p>
+                                </div>
+                            </section>
                         </template>
                     </b-table>
                 </section>

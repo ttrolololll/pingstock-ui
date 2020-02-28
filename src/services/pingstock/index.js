@@ -156,6 +156,12 @@ const pingstock = {
       }
     })
   },
+  searchStocks: s => {
+    return axios({
+      method: 'get',
+      url: baseUrl + '/users/stocks/search?s=' + s
+    })
+  },
   stockAlertRules: triggered => {
     let triggeredVal = 0
     if (triggered) {
@@ -164,6 +170,17 @@ const pingstock = {
     return axios({
       method: 'get',
       url: baseUrl + '/users/stock-alerts?triggered=' + triggeredVal
+    })
+  },
+  createStockAlertRule: (symbol, operator, target) => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/stock-alerts',
+      data: {
+        stock_symbol: symbol,
+        operator: operator,
+        target: target
+      }
     })
   },
   updateStockAlertRule: rule => {

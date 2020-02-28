@@ -178,7 +178,7 @@ const routes = [
       },
       {
         path: 'triggered',
-        name: 'StockAlertRules',
+        name: 'TriggeredStockAlertRules',
         component: () => import('../views/stockalertrule/StockAlertRule.vue'),
         props: {
           triggered: true

@@ -136,6 +136,7 @@ export default {
       })
     },
     fetchSubscritpion: function () {
+      this.isPageLoading = true
       pingstock.subscriptions()
         .then(resp => {
           this.subscription = resp.data.data
@@ -150,6 +151,9 @@ export default {
             position: 'is-bottom-right',
             type: 'is-danger'
           })
+        })
+        .finally(() => {
+          this.isPageLoading = false
         })
     }
   },
