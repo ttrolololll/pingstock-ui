@@ -6,8 +6,7 @@
                     <div class="columns">
                         <div class="column is-offset-3 is-6">
                             <figure class="logo has-text-centered">
-                                <img src="https://raw.githubusercontent.com/buefy/buefy/dev/static/img/buefy-logo.png"
-                                     alt="Lightweight UI components for Vue.js based on Bulma">
+                                <img src="../assets/logo.png" alt="PingStock.io">
                             </figure>
                             <form v-on:submit.prevent="handleRegister()">
                                 <b-field label="First Name">

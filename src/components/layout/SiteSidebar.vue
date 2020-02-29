@@ -1,8 +1,7 @@
 <template>
     <b-menu class="site-menu">
         <figure class="menu-logo">
-            <img src="https://raw.githubusercontent.com/buefy/buefy/dev/static/img/buefy-logo.png"
-                 alt="Lightweight UI components for Vue.js based on Bulma">
+            <img src="../../assets/logo.png" alt="PingStock.io">
         </figure>
         <b-menu-list>
             <b-menu-item

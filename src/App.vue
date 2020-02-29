@@ -12,7 +12,7 @@
       .logo {
         margin-bottom: 1rem;
         img {
-          max-width: 100px;
+          max-width: 200px;
         }
       }
     }

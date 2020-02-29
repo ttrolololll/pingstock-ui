@@ -190,11 +190,6 @@ const routes = [
         component: () => import('../views/stockalertrule/NewStockAlertRule.vue')
       }
     ]
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: () => import('../views/About.vue')
   }
 ]
 
