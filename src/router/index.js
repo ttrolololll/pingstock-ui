@@ -11,6 +11,13 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    component: AuthLayout,
+    beforeEnter: (to, from, next) => {
+      next('/stock-alert-rules')
+    }
+  },
+  {
     path: '/register',
     component: AuthLayout,
     children: [
