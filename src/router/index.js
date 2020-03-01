@@ -122,17 +122,17 @@ const routes = [
         })
     }
   },
-  {
-    path: '/dashboard',
-    component: DefaultLayout,
-    children: [
-      {
-        path: '',
-        name: 'Dashboard',
-        component: () => import('../views/Dashboard.vue')
-      }
-    ]
-  },
+  // {
+  //   path: '/dashboard',
+  //   component: DefaultLayout,
+  //   children: [
+  //     {
+  //       path: '',
+  //       name: 'Dashboard',
+  //       component: () => import('../views/Dashboard.vue')
+  //     }
+  //   ]
+  // },
   {
     path: '/account',
     component: DefaultLayout,
@@ -202,7 +202,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.no_auth === true) {
     // user logged in, redirect to default protected route
     if (!_.isEmpty(store.state.auth.token)) {
-      next('/dashboard')
+      next('/stock-alert-rules')
       return
     }
     // proceed

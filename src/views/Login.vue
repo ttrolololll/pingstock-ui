@@ -90,23 +90,7 @@ export default {
         return
       }
       await this.$store.dispatch('set_user', profileResp.data.data)
-      await this.$router.push('/dashboard')
-      // pingstock.login(this.email, this.password)
-      //   .then(resp => {
-      //     this.$store.dispatch('login', resp.data.data.access_token)
-      //     this.$router.push('/dashboard')
-      //   })
-      //   .catch(err => {
-      //     this.$buefy.toast.open({
-      //       duration: 5000,
-      //       message: err.response.data.message ? err.response.data.message : 'Email or password not found',
-      //       position: 'is-bottom-right',
-      //       type: 'is-danger'
-      //     })
-      //   })
-      //   .finally(() => {
-      //     this.submitting = false
-      //   })
+      await this.$router.push('/stock-alert-rules')
     },
     handleResendVerificationEmail: function () {
       this.submitting = true

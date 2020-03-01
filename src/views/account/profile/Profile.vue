@@ -28,6 +28,7 @@
                 </form>
             </div>
         </section>
+        <b-loading :is-full-page="false" :active.sync="isPageLoading"></b-loading>
     </div>
 </template>
 
@@ -43,11 +44,13 @@ export default {
   },
   data () {
     return {
+      isPageLoading: false,
       isReadOnly: true
     }
   },
   created () {
     if (!this.user) {
+      this.isPageLoading = true
       pingstock.profile()
         .then(resp => {
           this.$store.dispatch('set_user', resp.data.data)
@@ -60,6 +63,9 @@ export default {
             type: 'is-warn'
           })
         })
+        .finally(() => {
+          this.isPageLoading = false
+        })
     }
   },
   methods: {
@@ -67,6 +73,7 @@ export default {
       this.isReadOnly = !this.isReadOnly
     },
     handleProfileUpdate: function () {
+      this.isPageLoading = true
       this.isReadOnly = true
       pingstock.profileUpdate(this.user.first_name, this.user.last_name, this.user.email)
         .then(resp => {
@@ -91,6 +98,9 @@ export default {
             type: 'is-danger'
           })
           this.isReadOnly = false
+        })
+        .finally(() => {
+          this.isPageLoading = false
         })
     }
   },

@@ -26,6 +26,7 @@
                 </div>
             </div>
         </section>
+        <b-loading :is-full-page="false" :active.sync="isPageLoading"></b-loading>
     </div>
 </template>
 
@@ -46,13 +47,15 @@ export default {
   },
   data () {
     return {
-      intentClientSecret: undefined,
+      isPageLoading: false,
       isEdit: false,
-      isSubmitting: false
+      isSubmitting: false,
+      intentClientSecret: undefined
     }
   },
   methods: {
     initiateCardSetup: function () {
+      this.isPageLoading = true
       this.isEdit = true
       pingstock.stripeSetupIntent()
         .then(resp => {
@@ -71,8 +74,12 @@ export default {
           })
           this.isEdit = false
         })
+        .finally(() => {
+          this.isPageLoading = false
+        })
     },
     cardSetupConfirm: async function () {
+      this.isPageLoading = true
       this.isSubmitting = true
       // get payment_method from Stripe
       const { setupIntent, err } = await stripe.confirmCardSetup(
@@ -91,6 +98,7 @@ export default {
         })
         this.intentClientSecret = undefined
         this.isSubmitting = false
+        this.isPageLoading = false
         return
       }
       if (!setupIntent) {
@@ -101,6 +109,7 @@ export default {
           type: 'is-danger'
         })
         this.isSubmitting = false
+        this.isPageLoading = false
         return
       }
       // update user payment details by payment_method
@@ -114,6 +123,7 @@ export default {
         })
         this.intentClientSecret = undefined
         this.isSubmitting = false
+        this.isPageLoading = false
         return
       }
       // re-fetch user profile
@@ -136,9 +146,11 @@ export default {
         .finally(() => {
           this.isSubmitting = false
           this.isEdit = false
+          this.isPageLoading = false
         })
     },
     deleteAllCards: function () {
+      this.isPageLoading = true
       pingstock.stripeDeleteAllCards()
         .then(resp => {
           this.$buefy.toast.open({
@@ -152,6 +164,7 @@ export default {
           this.$store.dispatch('remove_user_payment_method')
           this.isEdit = false
           this.intentClientSecret = undefined
+          this.isPageLoading = false
         })
     },
     confirmDelete: function () {

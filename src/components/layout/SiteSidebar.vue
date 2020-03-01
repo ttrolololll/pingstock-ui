@@ -3,14 +3,14 @@
         <figure class="menu-logo">
             <img src="../../assets/logo.png" alt="PingStock.io">
         </figure>
-        <b-menu-list>
-            <b-menu-item
-                    label="Dashboard"
-                    icon="home"
-                    tag="router-link"
-                    to="/dashboard">
-            </b-menu-item>
-        </b-menu-list>
+<!--        <b-menu-list>-->
+<!--            <b-menu-item-->
+<!--                    label="Dashboard"-->
+<!--                    icon="home"-->
+<!--                    tag="router-link"-->
+<!--                    to="/dashboard">-->
+<!--            </b-menu-item>-->
+<!--        </b-menu-list>-->
         <b-menu-list label="Stock Alert Rules">
             <b-menu-item
                     label="My Alert Rules"
@@ -86,7 +86,7 @@ export default {
         .menu-logo {
             margin-bottom: 1rem;
             img {
-                max-width: 100px;
+                max-width: 200px;
             }
         }
     }

@@ -42,6 +42,7 @@
                 </b-steps>
             </div>
         </section>
+        <b-loading :is-full-page="false" :active.sync="isPageLoading"></b-loading>
     </div>
 </template>
 
@@ -57,6 +58,7 @@ export default {
   },
   data () {
     return {
+      isPageLoading: false,
       products: [],
       paymentMethods: [],
       isSubscribing: false,
@@ -80,18 +82,10 @@ export default {
           })
           return
         }
-        next()
+        next(vm => {})
       })
       .catch(() => {
-        next(vm => {
-          vm.$router.push({ name: 'Subscriptions' })
-          vm.$buefy.toast.open({
-            duration: 5000,
-            message: 'Unable to determine active subscription status',
-            position: 'is-bottom-right',
-            type: 'is-danger'
-          })
-        })
+        next(() => {})
       })
   },
   created () {
@@ -100,14 +94,14 @@ export default {
         this.products = resp.data.data
       })
       .catch(() => {
-        this.$router.push('/dashboard')
+        this.$router.push('/stock-alert-rules')
       })
     pingstock.paymentMethods()
       .then(resp => {
         this.paymentMethods = resp.data.data
       })
       .catch(() => {
-        this.$router.push('/dashboard')
+        this.$router.push('/stock-alert-rules')
       })
   },
   methods: {
@@ -117,6 +111,7 @@ export default {
       }
     },
     handlePaymentMethod: function () {
+      this.isPageLoading = true
       this.isSubmitting = true
       pingstock.subscribe(this.selectedPlan)
         .then(resp => {
@@ -138,6 +133,7 @@ export default {
         })
         .finally(() => {
           this.isSubscribing = false
+          this.isPageLoading = false
         })
     }
   },

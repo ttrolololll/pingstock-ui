@@ -25,6 +25,7 @@
                 </form>
             </div>
         </section>
+        <b-loading :is-full-page="false" :active.sync="isPageLoading"></b-loading>
     </div>
 </template>
 
@@ -40,6 +41,7 @@ export default {
   },
   data () {
     return {
+      isPageLoading: false,
       isSubmitting: false,
       currentPassword: '',
       newPassword: '',
@@ -48,6 +50,7 @@ export default {
   },
   methods: {
     handlePasswordUpdate: function () {
+      this.isPageLoading = true
       this.isSubmitting = true
       pingstock.passwordUpdate(this.currentPassword, this.newPassword, this.confirmPassword)
         .then(resp => {
@@ -70,6 +73,7 @@ export default {
           })
         })
         .finally(() => {
+          this.isPageLoading = false
           this.isSubmitting = false
         })
     }

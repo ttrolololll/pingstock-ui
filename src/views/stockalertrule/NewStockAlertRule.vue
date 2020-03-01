@@ -5,7 +5,10 @@
             <div class="tab-content">
                 <section>
                     <div class="content">
-                        <b-field label="Stock Symbol" message="Currently supports SG and US equities">
+                        <b-message title="Upgrade to create more stock alert rules" type="is-info" v-if="isUpgradeNotice">
+                            You have reached the maximum allowed stock alert rules, please consider <router-link :to="{name: 'Subscriptions'}">upgrading</router-link> to get more out of your membership
+                        </b-message>
+                        <b-field label="Stock Symbol" message="Currently supports SG, US and HK equities">
                             <b-autocomplete
                                     :data="data"
                                     placeholder="e.g. dbs"
@@ -56,6 +59,7 @@ export default {
     return {
       isPageLoading: false,
       isFetching: false,
+      isUpgradeNotice: false,
       searchTerm: '',
       data: [],
       selected: null,
@@ -89,6 +93,9 @@ export default {
           this.$router.push('/stock-alert-rules')
         })
         .catch(err => {
+          if (err.response.status === 403) {
+            this.isUpgradeNotice = true
+          }
           this.$buefy.toast.open({
             duration: 5000,
             message: err.response.data.message ? err.response.data.message : 'Unable to create rule, please try again',
