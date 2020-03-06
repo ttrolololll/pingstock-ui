@@ -19,9 +19,18 @@
                             <b-table-column field="operator" label="Trigger Condition" sortable>{{ props.row.operator }} than</b-table-column>
                             <b-table-column field="target" label="Trigger Value" sortable>{{ props.row.target }}</b-table-column>
                             <b-table-column field="status" label="Status" sortable>
-                                <span class="tag" :class="type(props.row.triggered)">{{ props.row.triggered ? 'Triggered' : 'Active' }}</span>
+                                <span class="tag" :class="type(props.row.triggered_at)">{{ props.row.triggered_at ? 'Triggered' : 'Active' }}</span>
                             </b-table-column>
-                            <b-table-column field="created_at" label="Created At" sortable>{{ props.row.created_at | toLocalTime | humanizedLocalTimeShort }}</b-table-column>
+                            <b-table-column field="created_at" label="Created At" sortable>
+                                <b-tooltip type="is-info" position="is-left" :label="props.row.created_at | toLocalTime | outDateTimeShort">
+                                    {{ props.row.created_at | toLocalTime | outHumanizedTimeFromNow }}
+                                </b-tooltip>
+                            </b-table-column>
+                            <b-table-column field="triggered_at" label="Triggered At" sortable v-if="$props.triggered">
+                                <b-tooltip type="is-info" position="is-left" :label="props.row.triggered_at | toLocalTime | outDateTimeShort">
+                                    {{ props.row.triggered_at | toLocalTime | outHumanizedTimeFromNow }}
+                                </b-tooltip>
+                            </b-table-column>
                             <b-table-column field="actions" label="Actions" v-if="!$props.triggered">
                                 <div class="buttons">
                                     <b-button type="is-success" rounded @click="edit(props.row)">
@@ -175,7 +184,7 @@ export default {
       })
     },
     type (value) {
-      if (value === 1) {
+      if (value) {
         return 'is-light'
       }
       return 'is-success'

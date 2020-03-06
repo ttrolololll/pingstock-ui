@@ -11,9 +11,14 @@ Vue.use(Buefy)
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
 
-Vue.filter('humanizedLocalTimeShort', function (value) {
+Vue.filter('outDateTimeShort', function (value) {
   if (!value) return ''
   return moment(value).format('D MMM YYYY HH:mm:ss')
+})
+
+Vue.filter('outHumanizedTimeFromNow', function (value) {
+  if (!value) return ''
+  return moment(value).fromNow()
 })
 
 Vue.filter('toLocalTime', function (value) {
