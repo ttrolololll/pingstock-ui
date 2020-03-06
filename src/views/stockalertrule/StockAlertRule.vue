@@ -26,12 +26,12 @@
                                     {{ props.row.created_at | toLocalTime | outHumanizedTimeFromNow }}
                                 </b-tooltip>
                             </b-table-column>
-                            <b-table-column field="triggered_at" label="Triggered At" sortable v-if="props.row.triggered_at">
+                            <b-table-column field="triggered_at" label="Triggered At" key="triggered_at" sortable v-if="props.row.triggered_at">
                                 <b-tooltip type="is-info" position="is-left" :label="props.row.triggered_at | toLocalTime | outDateTimeShort">
                                     {{ props.row.triggered_at | toLocalTime | outHumanizedTimeFromNow }}
                                 </b-tooltip>
                             </b-table-column>
-                            <b-table-column field="actions" label="Actions" v-if="!props.row.triggered_at">
+                            <b-table-column field="actions" label="Actions" key="actions" v-if="!props.row.triggered_at">
                                 <div class="buttons">
                                     <b-button type="is-success" rounded @click="edit(props.row)">
                                         <b-tooltip type="is-success" label="Edit"><b-icon icon="pencil" size="is-small"></b-icon></b-tooltip>
