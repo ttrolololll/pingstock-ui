@@ -155,6 +155,11 @@ const routes = [
         component: () => import('../views/account/profile/Password.vue')
       },
       {
+        path: 'settings',
+        name: 'Settings',
+        component: () => import('../views/account/setting/Settings.vue')
+      },
+      {
         path: 'payments',
         name: 'Payments',
         component: () => import('../views/account/payment/Payment.vue')

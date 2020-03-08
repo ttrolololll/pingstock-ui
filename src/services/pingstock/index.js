@@ -96,6 +96,30 @@ const pingstock = {
       }
     })
   },
+  settings: () => {
+    return axios({
+      method: 'get',
+      url: baseUrl + '/users/settings'
+    })
+  },
+  generateServiceToken: (service) => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/settings/services/tokens',
+      data: {
+        service: service
+      }
+    })
+  },
+  unlinkService: (service) => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/settings/services/unlink',
+      data: {
+        service: service
+      }
+    })
+  },
   stripeSetupIntent: () => {
     return axios({
       method: 'post',

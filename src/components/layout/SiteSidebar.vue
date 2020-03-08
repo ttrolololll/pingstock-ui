@@ -39,6 +39,12 @@
                     to="/account/profile">
             </b-menu-item>
             <b-menu-item
+                    label="Settings"
+                    icon="cogs"
+                    tag="router-link"
+                    to="/account/settings">
+            </b-menu-item>
+            <b-menu-item
                     label="Payments"
                     icon="cash-multiple"
                     tag="router-link"
