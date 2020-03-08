@@ -2,6 +2,9 @@
     <div class="view-stock-alert-rules">
         <PageHeader title="My Stock Alert Rules" subtitle=""/>
         <section>
+            <b-notification type="is-info" aria-close-label="Close notification">
+                You can now head over to <router-link :to="{name: 'Settings'}">Account Settings</router-link> to link your account with your <b><b-icon icon="telegram"></b-icon> Telegram</b> and receive stock alerts via Telegram!
+            </b-notification>
             <div class="tab-content">
                 <section>
                     <b-table
