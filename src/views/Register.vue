@@ -23,6 +23,14 @@
                                 </b-field>
                                 <div class="content has-text-centered">
                                     <p><b-button type="is-success" nativeType="submit" size="is-medium" expanded :disabled="isSubmitDisabled">Submit</b-button></p>
+                                </div>
+                                <div class="content has-text-centered">
+                                    <p>OR</p>
+                                    <v-facebook-login :app-id="fbAppID" version="v6.0" @sdk-init="handleSdkInit" @login="handleFacebookRegister">
+                                        <template slot="login">Register with Facebook</template>
+                                    </v-facebook-login>
+                                </div>
+                                <div class="content has-text-centered">
                                     <p>Already have an account? <router-link to="/login">Login here</router-link>!</p>
                                 </div>
                             </form>
@@ -31,16 +39,27 @@
                 </div>
             </div>
         </section>
+        <b-loading :is-full-page="true" :active.sync="isPageLoading"></b-loading>
     </div>
 </template>
 
 <script>
+import VFacebookLogin from 'vue-facebook-login-component'
 import pingstock from '../services/pingstock'
 
 export default {
   name: 'Register',
+  components: {
+    VFacebookLogin
+  },
   data () {
     return {
+      fbAppID: process.env.VUE_APP_FACEBOOK_APP_ID,
+      facebook: {
+        FB: {},
+        scope: {}
+      },
+      isPageLoading: false,
       first_name: undefined,
       last_name: undefined,
       email: undefined,
@@ -72,6 +91,56 @@ export default {
         .finally(() => {
           this.submitting = false
         })
+    },
+    handleFacebookRegister: function ({ authResponse, status }) {
+      this.isPageLoading = true
+      if (status === 'connected') {
+        pingstock.facebookAuth(authResponse.signedRequest)
+          .then(fbAuthResp => {
+            this.$store.dispatch('login', fbAuthResp.data.data.access_token)
+              .then(() => {
+                pingstock.profile()
+                  .then(profileResp => {
+                    this.$store.dispatch('set_user', profileResp.data.data)
+                    this.$router.push('/stock-alert-rules')
+                  })
+                  .catch(err => {
+                    this.$buefy.toast.open({
+                      duration: 5000,
+                      message: err.response.data.message ? err.response.data.message : 'Unable to retrieve profile',
+                      position: 'is-bottom-right',
+                      type: 'is-danger'
+                    })
+                  })
+                  .finally(() => {
+                    this.facebook.scope.logout()
+                    this.isPageLoading = false
+                  })
+              })
+          })
+          .catch(err => {
+            this.$buefy.toast.open({
+              duration: 5000,
+              message: err.response.data.message ? err.response.data.message : 'Unable to login via Facebook',
+              position: 'is-bottom-right',
+              type: 'is-danger'
+            })
+            this.facebook.scope.logout()
+            this.isPageLoading = false
+          })
+      } else {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: 'Unable to login with Facebook, please try again',
+          position: 'is-bottom-right',
+          type: 'is-danger'
+        })
+        this.isPageLoading = false
+      }
+    },
+    handleSdkInit ({ FB, scope }) {
+      this.facebook.scope = scope
+      this.facebook.FB = FB
     }
   },
   computed: {
@@ -81,6 +150,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-</style>

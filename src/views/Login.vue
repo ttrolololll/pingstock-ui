@@ -21,6 +21,14 @@
                                 </div>
                                 <div class="content has-text-centered">
                                     <p><b-button type="is-success" nativeType="submit" size="is-medium" expanded :disabled="isSubmitDisabled">Login</b-button></p>
+                                </div>
+                                <div class="content has-text-centered">
+                                    <p>OR</p>
+                                    <v-facebook-login :app-id="fbAppID" version="v6.0" @sdk-init="handleSdkInit" @login="handleFacebookLogin">
+                                        <template slot="login">Login with Facebook</template>
+                                    </v-facebook-login>
+                                </div>
+                                <div class="content has-text-centered">
                                     <p>Don't have an account? <router-link to="/register">Register here</router-link>!</p>
                                 </div>
                             </form>
@@ -42,16 +50,27 @@
                 </div>
             </div>
         </section>
+        <b-loading :is-full-page="true" :active.sync="isPageLoading"></b-loading>
     </div>
 </template>
 
 <script>
+import VFacebookLogin from 'vue-facebook-login-component'
 import pingstock from '../services/pingstock'
 
 export default {
   name: 'Login',
+  components: {
+    VFacebookLogin
+  },
   data () {
     return {
+      fbAppID: process.env.VUE_APP_FACEBOOK_APP_ID,
+      facebook: {
+        FB: {},
+        scope: {}
+      },
+      isPageLoading: false,
       isFormLogin: true,
       email: undefined,
       password: undefined,
@@ -64,6 +83,7 @@ export default {
     },
     handleLogin: function () {
       this.submitting = true
+      this.isPageLoading = true
       // login
       pingstock.login(this.email, this.password)
         .then(loginResp => {
@@ -84,6 +104,9 @@ export default {
                     type: 'is-danger'
                   })
                 })
+                .finally(() => {
+                  this.isPageLoading = false
+                })
             })
         })
         .catch(err => {
@@ -93,10 +116,61 @@ export default {
             position: 'is-bottom-right',
             type: 'is-danger'
           })
+          this.isPageLoading = false
         })
         .finally(() => {
           this.submitting = false
         })
+    },
+    handleFacebookLogin: function ({ authResponse, status }) {
+      this.isPageLoading = true
+      if (status === 'connected') {
+        pingstock.facebookAuth(authResponse.signedRequest)
+          .then(fbAuthResp => {
+            this.$store.dispatch('login', fbAuthResp.data.data.access_token)
+              .then(() => {
+                pingstock.profile()
+                  .then(profileResp => {
+                    this.$store.dispatch('set_user', profileResp.data.data)
+                    this.$router.push('/stock-alert-rules')
+                  })
+                  .catch(err => {
+                    this.$buefy.toast.open({
+                      duration: 5000,
+                      message: err.response.data.message ? err.response.data.message : 'Unable to retrieve profile',
+                      position: 'is-bottom-right',
+                      type: 'is-danger'
+                    })
+                  })
+                  .finally(() => {
+                    this.facebook.scope.logout()
+                    this.isPageLoading = false
+                  })
+              })
+          })
+          .catch(err => {
+            this.$buefy.toast.open({
+              duration: 5000,
+              message: err.response.data.message ? err.response.data.message : 'Unable to login via Facebook',
+              position: 'is-bottom-right',
+              type: 'is-danger'
+            })
+            this.facebook.scope.logout()
+            this.isPageLoading = false
+          })
+      } else {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: 'Unable to login with Facebook, please try again',
+          position: 'is-bottom-right',
+          type: 'is-danger'
+        })
+        this.isPageLoading = false
+      }
+    },
+    handleSdkInit ({ FB, scope }) {
+      this.facebook.scope = scope
+      this.facebook.FB = FB
     },
     handleResendVerificationEmail: function () {
       this.submitting = true
@@ -133,6 +207,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-</style>

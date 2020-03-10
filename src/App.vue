@@ -15,6 +15,10 @@
           max-width: 200px;
         }
       }
+      .v-facebook-login {
+        cursor: pointer;
+        margin: 0 auto;
+      }
     }
   }
 </style>

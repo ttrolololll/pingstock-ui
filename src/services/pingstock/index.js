@@ -96,6 +96,30 @@ const pingstock = {
       }
     })
   },
+  facebookAuth: (sr) => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/auth/facebook',
+      data: {
+        signed_request: sr
+      }
+    })
+  },
+  linkFacebook: fbID => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/auth/facebook/link',
+      data: {
+        facebook_id: fbID
+      }
+    })
+  },
+  unlinkFacebook: () => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/auth/facebook/unlink'
+    })
+  },
   settings: () => {
     return axios({
       method: 'get',

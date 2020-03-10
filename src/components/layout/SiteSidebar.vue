@@ -42,7 +42,7 @@
                     label="Settings"
                     icon="cogs"
                     tag="router-link"
-                    to="/account/settings">
+                    to="/account/settings/telegram">
             </b-menu-item>
             <b-menu-item
                     label="Payments"

@@ -30,6 +30,9 @@ export default new Vuex.Store({
     remove_user_payment_method (state) {
       state.user.card_brand = null
       state.user.card_last_four = null
+    },
+    update_user_facebook_id (state, fbID) {
+      state.user.facebook_id = fbID
     }
   },
   actions: {
@@ -50,6 +53,9 @@ export default new Vuex.Store({
     },
     remove_user_payment_method ({ commit }) {
       commit('remove_user_payment_method')
+    },
+    update_user_facebook_id ({ commit }, fbID) {
+      commit('update_user_facebook_id', fbID)
     }
   },
   modules: {

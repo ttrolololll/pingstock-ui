@@ -156,8 +156,26 @@ const routes = [
       },
       {
         path: 'settings',
-        name: 'Settings',
-        component: () => import('../views/account/setting/Settings.vue')
+        component: () => import('../views/account/setting/Settings.vue'),
+        children: [
+          {
+            path: '',
+            name: 'Settings',
+            beforeEnter: (to, from, next) => {
+              next('/account/settings/telegram')
+            }
+          },
+          {
+            path: 'telegram',
+            name: 'SettingsTelegram',
+            component: () => import('../views/account/setting/SettingsTelegram.vue')
+          },
+          {
+            path: 'facebook',
+            name: 'SettingsFacebook',
+            component: () => import('../views/account/setting/SettingsFacebook.vue')
+          }
+        ]
       },
       {
         path: 'payments',
