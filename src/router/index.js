@@ -129,17 +129,49 @@ const routes = [
         })
     }
   },
-  // {
-  //   path: '/dashboard',
-  //   component: DefaultLayout,
-  //   children: [
-  //     {
-  //       path: '',
-  //       name: 'Dashboard',
-  //       component: () => import('../views/Dashboard.vue')
-  //     }
-  //   ]
-  // },
+  {
+    path: '/watchlists',
+    component: DefaultLayout,
+    children: [
+      {
+        path: '',
+        name: 'Watchlist',
+        component: () => import('../views/watchlist/Watchlist.vue')
+      },
+      {
+        path: 'new',
+        name: 'NewWatchlistItem',
+        component: () => import('../views/watchlist/NewWatchlistItem.vue')
+      }
+    ]
+  },
+  {
+    path: '/stock-alert-rules',
+    component: DefaultLayout,
+    children: [
+      {
+        path: '',
+        name: 'StockAlertRules',
+        component: () => import('../views/stockalertrule/StockAlertRule.vue'),
+        props: {
+          triggered: false
+        }
+      },
+      {
+        path: 'triggered',
+        name: 'TriggeredStockAlertRules',
+        component: () => import('../views/stockalertrule/StockAlertRule.vue'),
+        props: {
+          triggered: true
+        }
+      },
+      {
+        path: 'new',
+        name: 'NewStockAlertRules',
+        component: () => import('../views/stockalertrule/NewStockAlertRule.vue')
+      }
+    ]
+  },
   {
     path: '/account',
     component: DefaultLayout,
@@ -191,33 +223,6 @@ const routes = [
         path: 'subscriptions/new',
         name: 'NewSubscription',
         component: () => import('../views/account/subscription/NewSubscription.vue')
-      }
-    ]
-  },
-  {
-    path: '/stock-alert-rules',
-    component: DefaultLayout,
-    children: [
-      {
-        path: '',
-        name: 'StockAlertRules',
-        component: () => import('../views/stockalertrule/StockAlertRule.vue'),
-        props: {
-          triggered: false
-        }
-      },
-      {
-        path: 'triggered',
-        name: 'TriggeredStockAlertRules',
-        component: () => import('../views/stockalertrule/StockAlertRule.vue'),
-        props: {
-          triggered: true
-        }
-      },
-      {
-        path: 'new',
-        name: 'NewStockAlertRules',
-        component: () => import('../views/stockalertrule/NewStockAlertRule.vue')
       }
     ]
   }

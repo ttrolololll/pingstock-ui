@@ -11,6 +11,20 @@
 <!--                    to="/dashboard">-->
 <!--            </b-menu-item>-->
 <!--        </b-menu-list>-->
+        <b-menu-list label="Watchlist">
+            <b-menu-item
+                    label="My Watchlist"
+                    icon="bookmark-check"
+                    tag="router-link"
+                    to="/watchlists">
+            </b-menu-item>
+            <b-menu-item
+                    label="Add New"
+                    icon="bookmark-plus"
+                    tag="router-link"
+                    to="/watchlists/new">
+            </b-menu-item>
+        </b-menu-list>
         <b-menu-list label="Stock Alert Rules">
             <b-menu-item
                     label="My Alert Rules"

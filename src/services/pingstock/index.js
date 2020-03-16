@@ -248,6 +248,42 @@ const pingstock = {
       url: baseUrl + '/users/stock-alerts/' + ruleID
     })
   },
+  watchlistItems: () => {
+    return axios({
+      method: 'get',
+      url: baseUrl + '/users/watchlists/items'
+    })
+  },
+  createWatchlistItem: (symbol, target) => {
+    return axios({
+      method: 'post',
+      url: baseUrl + '/users/watchlists/items',
+      data: {
+        stock_symbol: symbol,
+        reference_target: target
+      }
+    })
+  },
+  updateWatchlistItem: (itemID, target, cbsJsonStr) => {
+    return axios({
+      method: 'patch',
+      url: baseUrl + '/users/watchlists/items',
+      data: {
+        item_id: itemID,
+        reference_target: target,
+        cb_json_str: cbsJsonStr
+      }
+    })
+  },
+  deleteWatchlistItem: (itemID) => {
+    return axios({
+      method: 'delete',
+      url: baseUrl + '/users/watchlists/items',
+      data: {
+        item: itemID
+      }
+    })
+  },
   products: () => {
     return axios({
       method: 'get',

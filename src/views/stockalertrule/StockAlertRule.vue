@@ -91,7 +91,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import pingstock from '../../services/pingstock'
 
 export default {
-  name: 'Subscription',
+  name: 'StockAlertRule',
   components: {
     PageHeader
   },
