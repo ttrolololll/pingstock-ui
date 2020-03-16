@@ -142,6 +142,67 @@ const routes = [
         path: 'new',
         name: 'NewWatchlistItem',
         component: () => import('../views/watchlist/NewWatchlistItem.vue')
+      },
+      {
+        path: 'items/:itemID/circuitbreakers/mute',
+        name: 'MuteWatchlistItem',
+        beforeEnter: (to, from, next) => {
+          if (!to.query.duration) {
+            console.log(123)
+            next('/watchlists')
+            return
+          }
+          pingstock.muteWatchlistItem(to.params.itemID, to.query.duration)
+            .then(resp => {
+              Toast.open({
+                duration: 5000,
+                message: 'Watchlist item muted',
+                position: 'is-bottom-right',
+                type: 'is-success'
+              })
+            })
+            .catch(err => {
+              Toast.open({
+                duration: 5000,
+                message: err.response.data.message ? err.response.data.message : 'Unable to mute watchlist item',
+                position: 'is-bottom-right',
+                type: 'is-danger'
+              })
+            })
+            .finally(() => {
+              next('/watchlists')
+            })
+        }
+      },
+      {
+        path: 'items/:itemID/circuitbreakers/state',
+        name: 'ChangeWatchlistItemState',
+        beforeEnter: (to, from, next) => {
+          if (!to.query.active) {
+            next('/watchlists')
+            return
+          }
+          pingstock.changeWatchlistItemState(to.params.itemID, to.query.active)
+            .then(resp => {
+              Toast.open({
+                duration: 5000,
+                message: 'Watchlist item state updated',
+                position: 'is-bottom-right',
+                type: 'is-success'
+              })
+            })
+            .catch(err => {
+              Toast.open({
+                duration: 5000,
+                message: err.response.data.message ? err.response.data.message : 'Unable to update watchlist item state',
+                position: 'is-bottom-right',
+                type: 'is-danger'
+              })
+            })
+            .finally(() => {
+              next('/watchlists')
+            })
+        }
       }
     ]
   },

@@ -284,6 +284,24 @@ const pingstock = {
       }
     })
   },
+  muteWatchlistItem: (itemID, duration) => {
+    return axios({
+      method: 'patch',
+      url: baseUrl + '/users/watchlists/items/' + itemID + '/circuitbreakers/mute',
+      data: {
+        duration: duration
+      }
+    })
+  },
+  changeWatchlistItemState: (itemID, state) => {
+    return axios({
+      method: 'patch',
+      url: baseUrl + '/users/watchlists/items/' + itemID + '/circuitbreakers/state',
+      data: {
+        active: state
+      }
+    })
+  },
   products: () => {
     return axios({
       method: 'get',
