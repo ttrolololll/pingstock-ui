@@ -230,7 +230,9 @@ export default {
           const symbols = []
           resp.data.data.forEach(function (item, index) {
             item.circuit_breakers = JSON.parse(item.circuit_breakers)
-            symbols.push(item.stock_symbol)
+            if (index === 0) {
+              symbols.push(item.stock_symbol)
+            }
           })
           this.watchlistItems = resp.data.data
           this.defaultOpenedDetails = symbols
