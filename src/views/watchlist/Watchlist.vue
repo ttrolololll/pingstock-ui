@@ -2,7 +2,7 @@
     <div class="view-watchlist">
         <PageHeader title="My Watchlist" subtitle=""/>
         <section>
-            <b-notification type="is-info" aria-close-label="Close notification">
+            <b-notification type="is-info" aria-close-label="Close notification" v-cloak v-if="!user.telegram_id">
                 You can now head over to <router-link :to="{name: 'SettingsTelegram'}">Account Settings</router-link> to link your account with your <b><b-icon icon="telegram"></b-icon> Telegram</b> and receive stock alerts via Telegram!
             </b-notification>
             <div class="tab-content">
@@ -133,6 +133,7 @@
 import moment from 'moment'
 import PageHeader from '@/components/PageHeader.vue'
 import pingstock from '../../services/pingstock'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Watchlist',
@@ -249,6 +250,9 @@ export default {
     formatDatetime: function (d) {
       return moment(d).format('YYYY-MM-DD HH:mm:ss')
     }
+  },
+  computed: {
+    ...mapState(['user'])
   }
 }
 </script>

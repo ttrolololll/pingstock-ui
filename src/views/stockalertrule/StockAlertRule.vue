@@ -2,8 +2,11 @@
     <div class="view-stock-alert-rules">
         <PageHeader title="My Stock Alert Rules" subtitle=""/>
         <section>
-            <b-notification type="is-info" aria-close-label="Close notification">
+            <b-notification type="is-info" aria-close-label="Close notification" v-cloak v-if="!user.telegram_id">
                 You can now head over to <router-link :to="{name: 'SettingsTelegram'}">Account Settings</router-link> to link your account with your <b><b-icon icon="telegram"></b-icon> Telegram</b> and receive stock alerts via Telegram!
+            </b-notification>
+            <b-notification type="is-info" aria-close-label="Close notification" v-cloak>
+                You can now add stocks to <router-link :to="{name: 'Watchlist'}">watchlist</router-link>, and be notified when stock price is below or above 7%, 13%, 20% (circuit breakers) of your reference price.
             </b-notification>
             <div class="tab-content">
                 <section>
@@ -89,6 +92,7 @@
 <script>
 import PageHeader from '@/components/PageHeader.vue'
 import pingstock from '../../services/pingstock'
+import { mapState } from 'vuex'
 
 export default {
   name: 'StockAlertRule',
@@ -210,6 +214,9 @@ export default {
           this.isPageLoading = false
         })
     }
+  },
+  computed: {
+    ...mapState(['user'])
   },
   watch: {
     '$props.triggered': function () {
